@@ -43,6 +43,11 @@ public class Managers : MonoBehaviour
         _network.Update();
     }
 
+    private void OnDestroy()
+    {
+        _network.Disconnect();
+    }
+
     static void Init()
     {
         if (s_instance == null)
