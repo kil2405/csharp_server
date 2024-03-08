@@ -5,10 +5,13 @@ using System.Text;
 
 namespace Server.Game
 {
-    public class Player
+    public class Player : GameObject
     {
-        public PlayerInfo Info { get; set; } = new PlayerInfo() { PosInfo = new PositionInfo() };
-        public GameRoom Room { get; set; }
         public ClientSession Session { get; set; }
-    }
+
+        public Player()
+        {
+            ObjectType = GameObjectType.Player;
+        }
+	}
 }
