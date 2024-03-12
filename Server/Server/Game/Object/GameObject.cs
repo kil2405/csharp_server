@@ -19,10 +19,18 @@ namespace Server.Game
         public ObjectInfo Info { get; set; } = new ObjectInfo() { PosInfo = new PositionInfo() };
 
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+		public StatInfo Stat { get; private set; } = new StatInfo();
+		
+		public float Speed
+        {
+			get { return Stat.Speed; }
+			set { Stat.Speed = value; }
+        }
 
         public GameObject()
         {
             Info.PosInfo = PosInfo;
+			Info.StatInfo = Stat;
         }
 
 		public Vector2Int CellPos
@@ -66,5 +74,37 @@ namespace Server.Game
 			return cellPos;
 		}
 
+		public virtual void OnDamaged(GameObject attacker, int damage)
+		{
+			Stat.Hp = Math.Max(Stat.Hp - damage, 0);
+
+			S_ChangeHp changePacket = new S_ChangeHp();
+			changePacket.ObjectId = Id;
+			changePacket.Hp = Stat.Hp;
+			Room.Broadcast(changePacket);
+
+			if (Stat.Hp <= 0)
+            {
+				OnDead(attacker);
+            }
+		}
+
+		public virtual void OnDead(GameObject attacker)
+        {
+			S_Die diePacket = new S_Die();
+			diePacket.ObjectId = Id;
+			diePacket.AttackerId = attacker.Id;
+			Room.Broadcast(diePacket);
+
+			GameRoom room = Room;
+			room.LeaveGame(Id);
+			Stat.Hp = Stat.MaxHp;
+			PosInfo.State = CreatureState.Idle;
+			PosInfo.MoveDir = MoveDir.Down;
+			PosInfo.PosX = 0;
+			PosInfo.PosY = 0;
+
+			room.EnterGame(this);
+		}
 	}
 }
