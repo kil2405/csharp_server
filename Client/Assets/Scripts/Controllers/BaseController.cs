@@ -150,6 +150,9 @@ public class BaseController : MonoBehaviour
 
 	protected virtual void UpdateAnimation()
 	{
+		if (_animator == null || _sprite == null)
+			return;
+
 		if (State == CreatureState.Idle)
 		{
 			switch (Dir)

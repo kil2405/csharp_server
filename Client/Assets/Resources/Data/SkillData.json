@@ -3,14 +3,14 @@
     {
       "id": "1",
       "name": "평타",
-      "cooldown": "0.2",
+      "cooldown": "0.5",
       "damage": "10",
       "SkillType": "SkillAuto"
     },
     {
       "id": "2",
       "name": "화살공격",
-      "cooldown": "0.2",
+      "cooldown": "0.5",
       "damage": "5",
       "SkillType": "SkillProjectile",
       "projectile": {
