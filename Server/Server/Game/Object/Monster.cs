@@ -162,7 +162,7 @@ namespace Server.Game
                 Room.Broadcast(skillPacket);
 
                 // 스킬 쿨타임 적용
-                int coolTick = (int)(1000 * SkillData.colldown);
+                int coolTick = (int)(1000 * SkillData.cooldown);
                 _coolTick = Environment.TickCount64 + coolTick;
             }
 
