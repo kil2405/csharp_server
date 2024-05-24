@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 using System;
 using System.Collections.Generic;
 
@@ -7,21 +8,25 @@ namespace Server.Game
 {
     public class Monster : GameObject
     {
+        public int TemplateId { get; private set; }
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
+        }
 
-            // TEMP
-            Stat.Level = 1;
-            Stat.Hp = 100;
-            Stat.MaxHp = 100;
-            Stat.Speed = 5.0f;
+        public void Init(int templateId)
+        {
+            TemplateId = templateId;
+
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);
+            Stat.MergeFrom(monsterData.stat);
+            Stat.Hp = monsterData.stat.MaxHp;
 
             State = CreatureState.Idle;
         }
 
         // FSM (Finite State Machine)
-
         public override void Update()
         {
             switch(State)
@@ -153,7 +158,7 @@ namespace Server.Game
                 DataManager.SkillDict.TryGetValue(1, out SkillData);
 
                 // 데미지 판정
-                _target.OnDamaged(this, SkillData.damage + Stat.Attack);
+                _target.OnDamaged(this, SkillData.damage + TotalAttack);
 
                 // 스킬 사용했다고 알리기
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
@@ -184,6 +189,42 @@ namespace Server.Game
             movePacket.ObjectId = Id;
             movePacket.PosInfo = PosInfo;
             Room.Broadcast(movePacket);
+        }
+
+        public override void OnDead(GameObject attacker)
+        {
+            base.OnDead(attacker);
+
+            GameObject owner = attacker.GetOwner();
+
+            if(owner.ObjectType == GameObjectType.Player)
+            {
+                RewardData rewardData = GetRandomReward();
+                if(rewardData != null)
+                {
+                    Player player = (Player)owner;
+                    DbTransaction.RewardPlayer(player, rewardData, Room);
+                }
+            }
+        }
+
+        RewardData GetRandomReward()
+        {
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+
+            // rand = 0 ~ 100 -> 42
+            // 10 10 10 10 10
+            int sum = 0;
+            int rand = new Random().Next(1, 101);
+            foreach(RewardData rewardData in monsterData.rewards)
+            {
+                sum += rewardData.probability;
+                if(rand <= sum)
+                    return rewardData;
+            }
+
+            return null;
         }
     }
 }

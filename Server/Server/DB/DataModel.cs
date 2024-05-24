@@ -40,6 +40,7 @@ namespace Server.DB
         public int TemplateId { get; set; }
         public int Count { get; set; }
         public int Slot { get; set; } //인벤토리 배치 슬롯번호
+        public bool Equipped { get; set; } = false;
 
         [ForeignKey("Owner")]
         public int? OwnerDbId { get; set; }
