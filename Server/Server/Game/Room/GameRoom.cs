@@ -31,11 +31,6 @@ namespace Server.Game
         // 누군가 주기적으로 호출해줘야 한다.
         public void Update()
         {
-            foreach(Monster monster in _monsters.Values)
-            {
-                monster.Update();
-            }
-
             Flush();
         }
 
@@ -86,6 +81,8 @@ namespace Server.Game
                 monster.Room = this;
 
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
+
+                monster.Update();
             }
             else if(type == GameObjectType.Projectile)
             {
@@ -93,7 +90,7 @@ namespace Server.Game
                 _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
 
-                Push(projectile.Update);
+                projectile.Update();
             }
                 
             //타인에게 정보 전송
