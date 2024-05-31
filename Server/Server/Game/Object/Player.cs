@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Server.DB;
+using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -12,6 +13,7 @@ namespace Server.Game
     {
         public int PlayerDbId { get; set; }
         public ClientSession Session { get; set; }
+        public VisionCube Vision { get; private set; }
 
         public Inventory Inven { get; private set; } = new Inventory();
 
@@ -24,6 +26,7 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
+            Vision = new VisionCube(this);
         }
 
         public override void OnDamaged(GameObject attacker, int damage)
@@ -48,7 +51,7 @@ namespace Server.Game
             // -- 결과를 받아서 이어서 처리를 해야 하는 경우가 많음.(아이템 생성, 강화등등?? 메모리에서만 생성하고 처리하면 안됨, DB추가 후 결과를 받아 처리해야하는 경우)
 
             //그래서 결론은 다른 Db 작업용 Thread에 일감을 던져서 처리하도록 한다.
-            DbTransaction.SavePlayerStatus_Step1(this, Room);
+            DbTransaction.SavePlayerStatus_AllInOne(this, Room);
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

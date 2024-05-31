@@ -62,12 +62,7 @@ namespace Server.Game
 
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            Player target = Room.FindPlayer(p =>
-            {
-                Vector2Int dir = p.CellPos - CellPos;
-                return dir.cellDistFromZero <= _searchCellDist;
-            });
-
+            Player target = Room.FindClosestPlayer(CellPos, _searchCellDist);
             if (target == null)
                 return;
 
@@ -103,7 +98,7 @@ namespace Server.Game
                 return;
             }
 
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: false);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: true);
             if(path.Count < 2 || path.Count > _chaseCellDist)
             {
                 _target = null;
@@ -132,7 +127,7 @@ namespace Server.Game
             if(_coolTick == 0)
             {
                 // 유효한 타겟인지 체크
-                if(_target == null || _target.Room != Room || _target.Hp == 0)
+                if(_target == null || _target.Room != Room || _target.Hp < 0)
                 {
                     _target = null;
                     State = CreatureState.Moving;
@@ -169,7 +164,7 @@ namespace Server.Game
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = SkillData.id;
-                Room.Broadcast(skillPacket);
+                Room.Broadcast(CellPos, skillPacket);
 
                 // 스킬 쿨타임 적용
                 int coolTick = (int)(1000 * SkillData.cooldown);
@@ -193,7 +188,7 @@ namespace Server.Game
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.PosInfo = PosInfo;
-            Room.Broadcast(movePacket);
+            Room.Broadcast(CellPos, movePacket);
         }
 
         public override void OnDead(GameObject attacker)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Server
@@ -13,6 +14,17 @@ namespace Server
 		Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
 		object _lock = new object();
 
+		public List<ClientSession> GetSessions()
+		{
+			List<ClientSession> sessions = new List<ClientSession>();
+			lock (_lock)
+			{
+				sessions = _sessions.Values.ToList();
+			}
+
+			return sessions;
+        }
+
 		public ClientSession Generate()
 		{
 			lock (_lock)
@@ -23,9 +35,9 @@ namespace Server
 				session.SessionId = sessionId;
 				_sessions.Add(sessionId, session);
 
-				Console.WriteLine($"Connected : {sessionId}");
+                Console.WriteLine($"Connected ({_sessions.Count}) Players");
 
-				return session;
+                return session;
 			}
 		}
 
@@ -44,7 +56,8 @@ namespace Server
 			lock (_lock)
 			{
 				_sessions.Remove(session.SessionId);
-			}
+                Console.WriteLine($"Disconnect ({_sessions.Count}) Players");
+            }
 		}
 	}
 }

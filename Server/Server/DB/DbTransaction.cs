@@ -36,7 +36,7 @@ namespace Server.DB
                         room.Push(()=>
                         {
                             // ME
-                            Console.WriteLine($"Hp Saved({playerDb.Hp})");
+                            //Console.WriteLine($"Hp Saved({playerDb.Hp})");
                         });
                     }
                 }
@@ -73,7 +73,7 @@ namespace Server.DB
         // Me
         public static void SavePlayerStatus_Step3(int hp)
         {
-            Console.WriteLine($"Hp Saved({hp})");
+            //Console.WriteLine($"Hp Saved({hp})");
         }
 
         public static void RewardPlayer(Player player, RewardData rewardData, GameRoom room)

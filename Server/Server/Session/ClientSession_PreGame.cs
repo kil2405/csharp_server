@@ -144,8 +144,11 @@ namespace Server
             ServerState = PlayerServerState.ServerStateGame;
 
             // TODO : 입장 요청 들어오면..
-            GameRoom room = RoomManager.Instance.Find(1);
-            room.Push(room.EnterGame, MyPlayer);
+            GameLogic.Instance.Push(() =>
+            {
+                GameRoom room = GameLogic.Instance.Find(1);
+                room.Push(room.EnterGame, MyPlayer, true);
+            });
         }
 
         public void HandleCreatePlayer(C_CreatePlayer createPacket)

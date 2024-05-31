@@ -18,16 +18,12 @@ namespace Server.Game
             Room.PushAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
-            if(Room.Map.CanGo(destPos))
+            if(Room.Map.ApplyMove(this, destPos, collision: false))
             {
-                CellPos = destPos;
-
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;
                 movePacket.PosInfo = PosInfo;
-                Room.Broadcast(movePacket);
-
-                Console.WriteLine("Move Arrow");
+                Room.Broadcast(CellPos, movePacket);
             }
             else
             {
