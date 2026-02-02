@@ -14,11 +14,8 @@ namespace DummyClient
         {
             Thread.Sleep(5000);
 
-            // DNS (Domain Name System)
-            string host = Dns.GetHostName();
-            IPHostEntry ipHost = Dns.GetHostEntry(host);
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+            // 로컬 서버에 연결
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Loopback, 7777);
 
             Connector connector = new Connector();
 

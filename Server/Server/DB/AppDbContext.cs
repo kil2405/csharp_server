@@ -14,12 +14,12 @@ namespace Server.DB
         public DbSet<ItemDb> Items { get; set; }
 
         static readonly ILoggerFactory _logger = LoggerFactory.Create(builder => { builder.AddConsole(); });
-        string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GameDB;";
+        string _connectionString = @"Data Source=GameDB.db";
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options//.UseLoggerFactory(_logger)
-                .UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
+                .UseSqlite(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -62,13 +62,16 @@ namespace Server
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
+			// SQLite DB 자동 생성
+			using (AppDbContext db = new AppDbContext())
+			{
+				db.Database.EnsureCreated();
+			}
+
             GameLogic.Instance.Push(() => { GameRoom room = GameLogic.Instance.Add(1); });
 
-			// DNS (Domain Name System)
-			string host = Dns.GetHostName();
-			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+			// 모든 네트워크 인터페이스에서 연결 수락
+			IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 7777);
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
