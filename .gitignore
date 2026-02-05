@@ -1,0 +1,70 @@
+## .NET / C# .gitignore
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider
+.idea/
+*.sln.iml
+
+# MSBuild
+*.binlog
+[Bb]uild[Ll]og.*
+
+# Test Results
+[Tt]est[Rr]esult*/
+TestResult.xml
+nunit-*.xml
+*.VisualState.xml
+
+# SQLite Database (임시 파일만 제외, .db는 동기화 필요)
+*.db-shm
+*.db-wal
+
+# Code Coverage
+CodeCoverage/
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+
+# Others
+~$*
+*~
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
