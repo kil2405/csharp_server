@@ -53,6 +53,12 @@ namespace ServerCore
 			{
                 if (args.SocketError == SocketError.Success)
                 {
+                    if (args.AcceptSocket == null)
+                    {
+                        Console.WriteLine("OnAcceptCompleted: AcceptSocket is null");
+                        return;
+                    }
+
                     Session session = _sessionFactory.Invoke();
                     session.Start(args.AcceptSocket);
                     session.OnConnected(args.AcceptSocket.RemoteEndPoint);

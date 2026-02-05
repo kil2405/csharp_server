@@ -33,8 +33,7 @@ namespace ServerCore
 
 		void RegisterConnect(SocketAsyncEventArgs args)
 		{
-			Socket socket = args.UserToken as Socket;
-			if (socket == null)
+			if (args.UserToken is not Socket socket)
 				return;
 
 			try
@@ -55,6 +54,12 @@ namespace ServerCore
 			{
                 if (args.SocketError == SocketError.Success)
                 {
+                    if (args.ConnectSocket == null || args.RemoteEndPoint == null)
+                    {
+                        Console.WriteLine("OnConnectCompleted: ConnectSocket or RemoteEndPoint is null");
+                        return;
+                    }
+
                     Session session = _sessionFactory.Invoke();
                     session.Start(args.ConnectSocket);
                     session.OnConnected(args.RemoteEndPoint);
@@ -63,7 +68,7 @@ namespace ServerCore
                 {
                     Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
                 }
-            } 
+            }
             catch (Exception e)
             {
                 Console.WriteLine($"OnConnectCompleted Failed {e}");

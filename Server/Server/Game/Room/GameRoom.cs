@@ -102,7 +102,9 @@ namespace Server.Game
 
             if(type == GameObjectType.Player)
             {
-                Player player = gameObject as Player;
+                if (gameObject is not Player player)
+                    return;
+
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
 
@@ -123,7 +125,9 @@ namespace Server.Game
             }
             else if(type == GameObjectType.Monster)
             {
-                Monster monster = gameObject as Monster;
+                if (gameObject is not Monster monster)
+                    return;
+
                 _monsters.Add(gameObject.Id, monster);
                 monster.Room = this;
 
@@ -134,7 +138,9 @@ namespace Server.Game
             }
             else if(type == GameObjectType.Projectile)
             {
-                Projectile projectile = gameObject as Projectile;
+                if (gameObject is not Projectile projectile)
+                    return;
+
                 _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
 

@@ -21,12 +21,12 @@ namespace ServerCore
 
 		public ArraySegment<byte> ReadSegment
 		{
-			get { return new ArraySegment<byte>(_buffer.Array, _buffer.Offset + _readPos, DataSize); }
+			get { return new ArraySegment<byte>(_buffer.Array!, _buffer.Offset + _readPos, DataSize); }
 		}
 
 		public ArraySegment<byte> WriteSegment
 		{
-			get { return new ArraySegment<byte>(_buffer.Array, _buffer.Offset + _writePos, FreeSize); }
+			get { return new ArraySegment<byte>(_buffer.Array!, _buffer.Offset + _writePos, FreeSize); }
 		}
 
 		public void Clean()
@@ -40,7 +40,7 @@ namespace ServerCore
 			else
 			{
 				// 남은 찌끄레기가 있으면 시작 위치로 복사
-				Array.Copy(_buffer.Array, _buffer.Offset + _readPos, _buffer.Array, _buffer.Offset, dataSize);
+				Array.Copy(_buffer.Array!, _buffer.Offset + _readPos, _buffer.Array!, _buffer.Offset, dataSize);
 				_readPos = 0;
 				_writePos = dataSize;
 			}

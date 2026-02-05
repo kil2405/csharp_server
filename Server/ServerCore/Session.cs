@@ -16,6 +16,9 @@ namespace ServerCore
 		{
 			int processLen = 0;
 
+			if (buffer.Array == null)
+				return 0;
+
 			while (true)
 			{
 				// 최소한 헤더는 파싱할 수 있는지 확인
@@ -107,7 +110,7 @@ namespace ServerCore
 			if (Interlocked.Exchange(ref _disconnected, 1) == 1)
 				return;
 
-			OnDisconnected(_socket.RemoteEndPoint);
+			OnDisconnected(_socket.RemoteEndPoint ?? new IPEndPoint(IPAddress.None, 0));
 			_socket.Shutdown(SocketShutdown.Both);
 			_socket.Close();
 			Clear();
@@ -174,6 +177,9 @@ namespace ServerCore
 
 			_recvBuffer.Clean();
 			ArraySegment<byte> segment = _recvBuffer.WriteSegment;
+			if (segment.Array == null)
+				return;
+
 			_recvArgs.SetBuffer(segment.Array, segment.Offset, segment.Count);
 
 			try

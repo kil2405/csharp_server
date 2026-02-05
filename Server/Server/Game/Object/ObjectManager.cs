@@ -24,7 +24,8 @@ namespace Server.Game
                 gameObject.Id = GenerateId(gameObject.ObjectType);
                 if(gameObject.ObjectType == GameObjectType.Player)
                 {
-                    _players.Add(gameObject.Id, gameObject as Player);
+                    if (gameObject is Player player)
+                        _players.Add(gameObject.Id, player);
                 }
             }
 
