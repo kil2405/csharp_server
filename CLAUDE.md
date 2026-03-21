@@ -83,3 +83,34 @@ dotnet run --project Server/Server.csproj
 3. **커밋 전 History 업데이트 필수**
 4. **GameDB.db 파일 커밋 금지 (.gitignore)**
 5. **ServerCore 수정 시 주의**: Server와 DummyClient 모두 참조
+
+## TaskForce.AI 칸반보드 연동 (팀 에이전트 필수)
+
+팀 에이전트(Designer/Developer/QA) 활용 시 반드시 MCP `taskforce` 도구로 칸반보드에 작업을 반영합니다.
+
+### 작업 시작 전
+1. **개발서버 확인**: `lsof -ti :3001` 로 포트 확인 → 없으면 `cd /Users/kdg/WorkSpace/agent && npm run dev &` 실행
+2. **브라우저 열기**: `open http://localhost:3001/board`
+3. **프로젝트 확인**: `list_projects` → "csharp_server" 프로젝트 존재 확인
+
+### 워크플로우 (MCP 도구 사용)
+1. **태스크 생성**: `create_task` → 프로젝트="csharp_server", 제목/설명/역할/우선순위 설정
+2. **태스크 클레임**: `claim_task` → 자신의 역할명(Designer/Developer/QA)으로 클레임
+3. **진행 업데이트**: `update_task_status` → IN_PROGRESS 전환
+4. **활동 기록**: `add_activity` → 주요 변경사항, 결정사항 기록 (type: "agent")
+5. **리뷰 전환**: `update_task_status` → REVIEW 전환 (QA 대기)
+6. **완료 처리**: `update_task_status` → DONE 전환
+
+### 상태 전환 규칙
+```
+TODO → CLAIMED (claim_task)
+CLAIMED → IN_PROGRESS (update_task_status)
+IN_PROGRESS → REVIEW (update_task_status)
+REVIEW → DONE (update_task_status)
+```
+
+### 활동 로그 기록 시점
+- 작업 시작 시 (무엇을 할 계획인지)
+- 주요 결정/변경 시 (어떤 방식을 선택했는지)
+- 문제 발견 시 (QA가 버그 발견 등)
+- 작업 완료 시 (결과 요약)
